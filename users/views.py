@@ -1,0 +1,46 @@
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login as auth_login
+from django.http import HttpResponse
+
+from .models import CustomUser
+from .forms import CustomerCreationForm, LoginForm
+
+
+def login(request):
+    form = LoginForm()
+    message = ""
+    if request.method == "POST":
+
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+
+        user = authenticate(request, email=email, password=password)
+
+        if user is not None:
+            auth_login(request, user)
+            return redirect("home")
+        else:
+            message = "Invalid username or password"
+            render(request, "users/login.html", {"form": form, "message": message})
+
+    return render(request, "users/login.html", {"form": form, "message": message})
+
+
+def signup(request):
+    form = CustomerCreationForm()
+    message = ""
+
+    if request.method == "POST":
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+
+        user = CustomUser(email=email)
+        user.set_password(password)
+
+        user.save()
+        return redirect("login")
+
+    else:
+        message = "Invalid"
+
+    return render(request, "users/signup.html", {"form": form, "message": message})
