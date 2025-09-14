@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-6xl px-6 py-10">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+    
+    <!-- Product Images -->
+    <div>
+      <!-- Main Image -->
+      {% if product.images.first %}
+        <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}"
+             class="w-full h-96 object-cover rounded-lg shadow">
+      {% else %}
+        <div class="w-full h-96 flex items-center justify-center bg-gray-200 text-gray-500 rounded-lg">
+          No Image Available
+        </div>
+      {% endif %}
+
+      <!-- Thumbnails -->
+      {% if product.images.all.count > 1 %}
+        <div class="mt-4 flex space-x-3 overflow-x-auto">
+          {% for image in product.images.all %}
+            <img src="{{ image.image.url }}" alt="{{ product.name }}"
+                 class="w-24 h-24 object-cover rounded-md border border-gray-200 hover:border-indigo-500 cursor-pointer">
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Product Info -->
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900">{{ product.name }}</h1>
+      <p class="mt-2 text-gray-600">Category: {{ product.category.name }}</p>
+      
+      <!-- Price + Discount -->
+      <div class="mt-4 flex items-center space-x-3">
+        {% if product.discount %}
+          <span class="text-2xl font-bold text-red-600">
+            ${{ discount_amt }}
+          </span>
+          <span class="line-through text-gray-500">
+            ${{ product.price|floatformat:2}}
+          </span>
+        {% else %}
+          <span class="text-2xl font-bold text-indigo-600">
+            ${{ product.price|floatformat:2 }}
+          </span>
+        {% endif %}
+      </div>
+
+      <!-- Description -->
+      <p class="mt-6 text-gray-700 leading-relaxed">{{ product.description }}</p>
+
+      <!-- Quantity -->
+      <p class="mt-4 text-sm text-gray-600">
+        Available Quantity: <span class="font-semibold">{{ product.quantity }}</span>
+      </p>
+
+      <!-- Add to Cart -->
+      <div class="mt-6">
+        <button class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-lg shadow">
+          Add to Cart
+        </button>
+        <a href="{% url 'order' %}">
+        <button class="bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-3 rounded-lg shadow">
+          Order Now
+        </button>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
