@@ -5,60 +5,87 @@
 {% block content %}
 <div class="min-h-screen bg-gray-100 py-10 px-6">
   <div class="max-w-7xl mx-auto">
+
     <h1 class="text-3xl font-bold text-gray-800 mb-8 text-center">Our Products</h1>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+      
+      <!-- Sidebar: Categories -->
+      <aside class="md:col-span-1 bg-white rounded-xl shadow-md p-5 h-fit min-h-screen">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">Categories</h2>
+        <ul class="space-y-2">
+          {% for category in categories %}
+            <li>
+              <a href="#" 
+                 class="block px-3 py-2 rounded-md text-gray-700 hover:bg-indigo-100 hover:text-indigo-700 transition">
+                {{ category.name }}
+              </a>
+            </li>
+          {% empty %}
+            <li class="text-gray-500 text-sm">No categories available</li>
+          {% endfor %}
+        </ul>
+      </aside>
 
-      {% for product in products %}
-      <a href="{% url 'product_detail' product.id %}">
-        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
-          <div class="h-48 bg-gray-200 flex items-center justify-center">
-
-            {% if product.images.first %}
-          <img src="{{ product.images.first.image.url }}" 
-              alt="{{ product.name }}" 
-              class="h-full w-full object-cover">
-          {% else %}
-          <div class="h-full w-full flex items-center justify-center bg-gray-200 text-gray-500">
-              No Image
-          </div>
-          {% endif %}
-
-          </div>
-
-          <div class="p-5">
-            <h2 class="text-lg font-semibold text-gray-800 truncate">{{ product.name }}</h2>
-            <p class="text-sm text-gray-500 mb-2">{{ product.category.name }}</p>
-            <p class="text-gray-600 text-sm mb-3 line-clamp-2">{{ product.description }}</p>
-
-            <div class="flex items-center justify-between">
-              <!-- <span class="text-xl font-bold text-blue-600">${{ product.price }}</span> -->
-              <div class="mt-4 flex items-center space-x-3">
-              {% if product.discount %}
-                <span class="text-xl font-bold text-red-600">
-                  ${{ discount_amts|index:forloop.counter0 }}
-                </span>
-                <span class="line-through text-gray-500">
-                  ${{ product.price|floatformat:2}}
-                </span>
+      <!-- Products Grid -->
+      <section class="md:col-span-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {% for product in products %}
+          <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transform hover:scale-105 transition duration-300 flex flex-col">
+            
+            <!-- Product Image -->
+            <a href="{% url 'product_detail' product.id %}" class="h-48 bg-gray-200 flex items-center justify-center">
+              {% if product.images.first %}
+                <img src="{{ product.images.first.image.url }}" 
+                     alt="{{ product.name }}" 
+                     class="h-full w-full object-cover">
               {% else %}
-                <span class="text-2xl font-bold text-indigo-600">
-                  ${{ product.price|floatformat:2 }}
-                </span>
+                <div class="h-full w-full flex items-center justify-center bg-gray-200 text-gray-500">
+                  No Image
+                </div>
               {% endif %}
-            </div>
-              <span class="text-sm text-gray-500">Stock: {{ product.quantity }}</span>
-            </div>
+            </a>
 
-            <button
-              class="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition">
-              Add to Cart
-            </button>
+            <!-- Product Details -->
+            <div class="p-5 flex flex-col flex-grow">
+              <a href="{% url 'product_detail' product.id %}">
+                <h2 class="text-lg font-semibold text-gray-800 truncate hover:text-indigo-600">
+                  {{ product.name }}
+                </h2>
+              </a>
+              <p class="text-sm text-gray-500 mb-2">{{ product.category.name }}</p>
+              <p class="text-gray-600 text-sm mb-3 line-clamp-2">{{ product.description }}</p>
+
+              <div class="flex items-center justify-between mt-auto">
+                <div class="flex items-center space-x-3">
+                  {% if product.discount %}
+                    <span class="text-xl font-bold text-red-600">
+                      ${{ discount_amts|index:forloop.counter0 }}
+                    </span>
+                    <span class="line-through text-gray-500">
+                      ${{ product.price|floatformat:2 }}
+                    </span>
+                  {% else %}
+                    <span class="text-2xl font-bold text-indigo-600">
+                      ${{ product.price|floatformat:2 }}
+                    </span>
+                  {% endif %}
+                </div>
+                <span class="text-sm text-gray-500">Stock: {{ product.quantity }}</span>
+              </div>
+
+              <a href="{% url 'add_to_cart' product.id %}" 
+                 class="mt-4 w-full block">
+                <button
+                  class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition">
+                  Add to Cart
+                </button>
+              </a>
+            </div>
           </div>
+          {% endfor %}
         </div>
-      </a>
-      {% endfor %}
-
+      </section>
     </div>
   </div>
 </div>

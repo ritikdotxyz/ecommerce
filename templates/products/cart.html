@@ -1,3 +1,68 @@
-<div>
-    <h1>Cart Page</h1>
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-6 text-gray-800">Your Cart</h1>
+
+  {% if cart_items %}
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Cart Items -->
+      <div class="md:col-span-2 space-y-4">
+        {% for item in cart_items %}
+          <div class="flex items-center bg-white rounded-lg shadow-md p-4">
+            <!-- Product Image -->
+            <div class="w-24 h-24 flex-shrink-0">
+              {% if item.product_id.images.first %}
+                <img src="{{ item.product_id.images.first.image.url }}" alt="{{ item.product_id.name }}" class="w-full h-full object-cover rounded-md">
+              {% else %}
+                <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500">No Image</div>
+              {% endif %}
+            </div>
+
+            <!-- Product Info -->
+            <div class="ml-4 flex-1">
+              <h2 class="text-lg font-semibold text-gray-800">{{ item.product_id.name }}</h2>
+              <p class="text-gray-600">Quantity: {{ item.quantity }}</p>
+              <p class="text-gray-900 font-bold mt-2">${{ item.product_id.price }}</p>
+            </div>
+
+            <!-- Actions -->
+            <div class="ml-4 space-x-2">
+                <a href="{% url 'remove_from_cart' item.product_id.id %}">
+                    <button class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">Remove</button>
+                </a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <!-- Cart Summary -->
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Order Summary</h2>
+        <div class="flex justify-between text-gray-700 mb-2">
+          <span>Subtotal</span>
+          <span>${{ total }}</span>
+        </div>
+        <div class="flex justify-between text-gray-700 mb-2">
+          <span>Shipping</span>
+          <span>$10</span>
+        </div>
+        <div class="flex justify-between font-bold text-gray-900 text-lg border-t pt-2">
+          <span>Total</span>
+          <span>${{ total|add:10 }}</span>
+        </div>
+        <a href="{% url 'checkout' %}">
+        <button class="w-full mt-6 bg-teal-600 text-white py-3 rounded-lg font-semibold hover:bg-teal-700">
+          Checkout
+        </button>
+        </a>
+      </div>
+    </div>
+  {% else %}
+    <div class="text-center text-gray-600">
+      <p>Your cart is empty.</p>
+      <a href="{% url 'home' %}" class="text-teal-600 font-semibold hover:underline">Continue Shopping</a>
+    </div>
+  {% endif %}
 </div>
+{% endblock %}
