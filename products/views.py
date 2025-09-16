@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
-from .models import Product, Cart, ProductCategory
-
+from .models import Product, Cart, ProductCategory, Order, OrderItems
+from users.models import UserAddress, CustomUser
 
 def calc_discount_amt(product):
     if product.discount:
@@ -21,7 +21,20 @@ def home(request):
     return render(
         request,
         "products/home.html",
-        {"products": products, "discount_amts": discount_amts, "categories": categories},
+        {
+            "products": products,
+            "discount_amts": discount_amts,
+            "categories": categories,
+        },
+    )
+
+
+def product_by_category(request, category_id):
+    products = Product.objects.filter(category_id=category_id)
+    category = ProductCategory.objects.get(id=category_id)
+
+    return render(
+        request, "products/products.html", {"products": products, "category": category}
     )
 
 
@@ -52,12 +65,11 @@ def add_to_cart(request, product_id):
         return redirect("cart")
     else:
         return redirect("login")
-    
+
+
 def remove_from_cart(request, product_id):
     if request.user.is_authenticated:
-        cart_item = Cart.objects.filter(
-            product_id_id=product_id, user=request.user
-        )
+        cart_item = Cart.objects.filter(product_id_id=product_id, user=request.user)
 
         cart_item.delete()
         return redirect("cart")
@@ -71,15 +83,51 @@ def cart(request):
     cart_items = Cart.objects.filter(user=request.user)
     if not cart_items.exists:
         return render(request, "products/cart.html", {"cart_items": []})
-    
+
     for item in cart_items:
         total += item.product_id.price
-    
-    return render(request, "products/cart.html", {"cart_items": cart_items, "total":total})
+
+    return render(
+        request, "products/cart.html", {"cart_items": cart_items, "total": total}
+    )
 
 
 def order(request):
-    return render(request, "products/order.html")
+    first_name = request.POST.get("first_name")
+    last_name = request.POST.get("last_name")
+    address = request.POST.get("address")
+    phone_number = request.POST.get("phone_number")
+
+    user = CustomUser.objects.get(id=request.user.id)
+    user.phone_no = phone_number
+    user.first_name = first_name
+    user.last_name = last_name
+    user.save()
+
+    UserAddress.objects.create(user=user, address_1=address)
+
+
+    cart_items = Cart.objects.filter(user=request.user)
+    if not cart_items.exists():
+        return redirect("home")
+
+    order = Order.objects.create(user=request.user, total=0)
+    total = 0
+
+    for item in cart_items:
+        OrderItems.objects.create(
+            order_id=order,
+            quantity=item.quantity,
+            product_id=item.product_id,
+        )
+        total += item.product_id.price * item.quantity
+
+    order.total = total
+    order.save()
+
+    cart_items.delete()
+
+    return render(request, "products/payment.html")
 
 
 def checkout(request):
@@ -87,16 +135,24 @@ def checkout(request):
     cart_items = Cart.objects.filter(user=request.user)
     if not cart_items.exists:
         return render(request, "products/cart.html", {"cart_items": []})
-    
+
     for item in cart_items:
         total += item.product_id.price
 
     print(cart_items)
-    return render(request, "products/checkout.html", {"cart_items": cart_items, "product":None, "total":total})
+    return render(
+        request,
+        "products/checkout.html",
+        {"cart_items": cart_items, "product": None, "total": total},
+    )
 
 
 def direct_order(request, product_id):
     product = Product.objects.get(id=product_id)
     total = product.price
 
-    return render(request, "products/checkout.html", {"product": product,  "cart_items": None, "total":total})
+    return render(
+        request,
+        "products/checkout.html",
+        {"product": product, "cart_items": None, "total": total},
+    )

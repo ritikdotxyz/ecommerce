@@ -63,21 +63,21 @@ class Cart(models.Model):
 
 
 class Order(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     total = models.FloatField()
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.user.email
+        return f"{self.user.email} - {self.total}"
 
 
 class OrderItems(models.Model):
     order_id = models.ForeignKey(Order, on_delete=models.CASCADE)
-    product_id = models.OneToOneField(Product, on_delete=models.CASCADE)
+    product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.product_id.name
+        return f"{self.product_id.name} - {self.quantity}"
