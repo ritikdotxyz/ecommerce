@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Product, Cart, ProductCategory, Order, OrderItems
 from users.models import UserAddress, CustomUser
 
+
 def calc_discount_amt(product):
     if product.discount:
         discount_percent = product.discount.discount_percent
@@ -104,8 +105,7 @@ def order(request):
     user.last_name = last_name
     user.save()
 
-    UserAddress.objects.create(user=user, address_1=address)
-
+    UserAddress.objects.get_or_create(user=user, address_1=address)
 
     cart_items = Cart.objects.filter(user=request.user)
     if not cart_items.exists():
@@ -125,9 +125,13 @@ def order(request):
     order.total = total
     order.save()
 
+    order_items = OrderItems.objects.filter(order_id=order)
+
     cart_items.delete()
 
-    return render(request, "products/payment.html")
+    return render(
+        request, "products/payment.html", {"order_items": order_items, "order": order}
+    )
 
 
 def checkout(request):
@@ -139,11 +143,23 @@ def checkout(request):
     for item in cart_items:
         total += item.product_id.price
 
-    print(cart_items)
+    user_address = UserAddress.objects.filter(user=request.user)
+    # user = CustomUser.objects.filter(user=request.user).first()
+
+    if not user_address.exists():
+        user_address = None
+    user_address = user_address.first()
+
     return render(
         request,
         "products/checkout.html",
-        {"cart_items": cart_items, "product": None, "total": total},
+        {
+            "cart_items": cart_items,
+            "product": None,
+            "total": total,
+            "user_address": user_address,
+            "user": request.user,
+        },
     )
 
 

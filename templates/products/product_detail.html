@@ -7,8 +7,8 @@
     <!-- Product Images -->
     <div>
       <!-- Main Image -->
-      {% if product.images.fiRs. t %}
-        <img src="{{ product.images.fiRs. t.image.url }}" alt="{{ product.name }}"
+      {% if product.images.first %}
+        <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}"
              class="w-full h-96 object-cover rounded-lg shadow">
       {% else %}
         <div class="w-full h-96 flex items-center justify-center bg-gray-200 text-gray-500 rounded-lg">
