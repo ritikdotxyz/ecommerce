@@ -25,7 +25,18 @@
             <div class="ml-4 flex-1">
               <h2 class="text-lg font-semibold text-gray-800">{{ item.product_id.name }}</h2>
               <p class="text-gray-600">Price: Rs. {{ item.product_id.price }}</p>
-              <p class="text-gray-600">Quantity: {{ item.quantity }}</p>
+              <div class="flex items-center space-x-2">
+                <a href="{% url 'update_quantity' item.product_id.id '-' 'checkout' %}" 
+                  class="px-3 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">-</a>
+
+                <span class="px-4 py-1 border border-gray-300 rounded text-gray-700">
+                  {{ item.quantity }}
+                </span>
+
+                <a href="{% url 'update_quantity' item.product_id.id '+' 'checkout' %}" 
+                  class="px-3 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">+</a>
+            </div>
+
             </div>
           </div>
         {% endfor %}

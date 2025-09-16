@@ -172,3 +172,23 @@ def direct_order(request, product_id):
         "products/checkout.html",
         {"product": product, "cart_items": None, "total": total},
     )
+
+
+def update_qunatity(request, product_id, operation, to):
+    print(operation)
+    cart_items = Cart.objects.filter(user=request.user)
+    if not cart_items.exists:
+        return redirect(to)
+    
+    cart_item = Cart.objects.get(product_id=product_id)
+    if operation == "+":
+        cart_item.quantity += 1
+
+    if operation == "-":
+        if cart_item.quantity == 1:
+            return redirect(to)
+        cart_item.quantity -= 1
+
+    cart_item.save()
+    
+    return redirect(to)

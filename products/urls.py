@@ -13,5 +13,6 @@ urlpatterns = [
     path("checkout/", views.checkout, name="checkout"),
     path("checkout/<int:product_id>", views.direct_order, name="direct_checkout"),
     path("products/category/<int:category_id>", views.product_by_category, name="products_category"),
+    path("update_quantity/<int:product_id>/<str:operation>/<str:to>/", views.update_qunatity, name="update_quantity")
 
 ]
