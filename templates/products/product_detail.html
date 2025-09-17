@@ -1,73 +1,141 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<div class="max-w-6xl px-6 py-10">
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+<div class="bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto">
     
-    <!-- Product Images -->
-    <div>
-      <!-- Main Image -->
-      {% if product.images.first %}
-        <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}"
-             class="w-full h-96 object-cover rounded-lg shadow">
-      {% else %}
-        <div class="w-full h-96 flex items-center justify-center bg-gray-200 text-gray-500 rounded-lg">
-          No Image Available
-        </div>
-      {% endif %}
+    <div class="lg:grid lg:grid-cols-3 lg:gap-10">
 
-      <!-- Thumbnails -->
-      {% if product.images.all.count > 1 %}
-        <div class="mt-4 flex space-x-3 overflow-x-auto">
-          {% for image in product.images.all %}
-            <img src="{{ image.image.url }}" alt="{{ product.name }}"
-                 class="w-24 h-24 object-cover rounded-md border border-gray-200 hover:border-indigo-500 cuRs. or-pointer">
-          {% endfor %}
-        </div>
-      {% endif %}
-    </div>
+      <div class="lg:col-span-2 bg-white rounded-2xl shadow-lg p-8 mb-8 lg:mb-0">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+          
+          <div>
+            <div class="relative w-full h-80 md:h-96 rounded-xl overflow-hidden shadow-xl">
+              {% if product.images.first %}
+                <img id="main-product-image" 
+                     src="{{ product.images.first.image.url }}" 
+                     alt="{{ product.name }}"
+                     class="w-full h-full object-contain transition-transform duration-300 transform scale-95">
+              {% else %}
+                <div class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-500 text-sm">
+                  Image Unavailable
+                </div>
+              {% endif %}
+            </div>
 
-    <!-- Product Info -->
-    <div>
-      <h1 class="text-3xl font-bold text-gray-900">{{ product.name }}</h1>
-      <p class="mt-2 text-gray-600">Category: {{ product.category.name }}</p>
-      
-      <!-- Price + Discount -->
-      <div class="mt-4 flex items-center space-x-3">
-        {% if product.discount %}
-          <span class="text-2xl font-bold text-red-600">
-            Rs. {{ discount_amt }}
-          </span>
-          <span class="line-through text-gray-500">
-            Rs. {{ product.price|floatformat:2}}
-          </span>
-        {% else %}
-          <span class="text-2xl font-bold text-indigo-600">
-            Rs. {{ product.price|floatformat:2 }}
-          </span>
-        {% endif %}
+            {% if product.images.all.count > 1 %}
+              <div class="mt-4 flex space-x-3 overflow-x-auto justify-center md:justify-start">
+                {% for image in product.images.all %}
+                  <img src="{{ image.image.url }}" alt="{{ product.name }}"
+                       class="thumbnail-image w-20 h-20 object-cover rounded-md border-2 border-transparent hover:border-indigo-600 transition-colors duration-200 cursor-pointer {% if forloop.first %}border-indigo-600{% endif %}"
+                       data-full-image="{{ image.image.url }}">
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+          
+          <div>
+            <span class="text-sm font-semibold text-indigo-600 uppercase">{{ product.category.name }}</span>
+            <h1 class="text-4xl font-extrabold text-gray-900 mt-2">{{ product.name }}</h1>
+            
+            <div class="mt-5 flex items-baseline space-x-4">
+              {% if product.discount %}
+                <span class="text-3xl font-bold text-red-600">
+                  Rs. {{ discount_amt }}
+                </span>
+                <span class="line-through text-lg text-gray-400">
+                  Rs. {{ product.price|floatformat:2}}
+                </span>
+              {% else %}
+                <span class="text-3xl font-bold text-gray-900">
+                  Rs. {{ product.price|floatformat:2 }}
+                </span>
+              {% endif %}
+            </div>
+
+            <p class="mt-6 text-base text-gray-700 leading-relaxed">{{ product.description }}</p>
+
+            <div class="mt-6 flex items-center text-sm font-medium text-gray-500">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+              <span class="text-green-600 font-semibold">In Stock</span> 
+              <span class="ml-2">({{ product.quantity }} available)</span>
+            </div>
+            
+            <div class="mt-8 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+              <a href="{% url 'add_to_cart' product.id %}" class="w-full">
+                <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-full transition-all duration-200 transform hover:scale-105 shadow-lg">
+                  Add to Cart
+                </button>
+              </a>
+              <a href="{% url 'direct_checkout' product.id %}" class="w-full">
+                <button class="w-full bg-transparent border border-indigo-600 text-indigo-600 font-semibold py-3 rounded-full transition-all duration-200 transform hover:scale-105 hover:bg-indigo-600 hover:text-white">
+                  Buy Now
+                </button>
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Description -->
-      <p class="mt-6 text-gray-700 leading-relaxed">{{ product.description }}</p>
-
-      <!-- Quantity -->
-      <p class="mt-4 text-sm text-gray-600">
-        Available Quantity: <span class="font-semibold">{{ product.quantity }}</span>
-      </p>
-
-      <!-- Add to Cart -->
-      <div class="mt-6">
-        <button class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-lg shadow">
-          Add to Cart
-        </button>
-        <a href="{% url 'direct_checkout' product.id %}">
-        <button class="bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-3 rounded-lg shadow">
-          Order Now
-        </button>
-        </a>
-      </div>
+      <aside class="lg:col-span-1">
+        <div class="bg-white rounded-2xl shadow-lg p-6 sticky top-28">
+          <h2 class="text-xl font-bold text-gray-900 mb-5 border-b pb-3">You May Also Like</h2>
+          <div class="space-y-6">
+            {% for similar_product in similar_products %}
+              <div class="flex items-start space-x-4">
+                <a href="{% url 'product_detail' similar_product.id %}" class="flex-shrink-0">
+                  {% if similar_product.images.first %}
+                    <img src="{{ similar_product.images.first.image.url }}" alt="{{ similar_product.name }}" 
+                         class="w-20 h-20 object-cover rounded-lg">
+                  {% else %}
+                    <div class="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center text-xs text-gray-500">No Image</div>
+                  {% endif %}
+                </a>
+                <div class="flex-grow">
+                  <a href="{% url 'product_detail' similar_product.id %}" class="text-base font-semibold text-gray-800 hover:text-indigo-600 transition-colors duration-200 line-clamp-2">
+                    {{ similar_product.name }}
+                  </a>
+                  <p class="mt-1 text-sm font-bold text-indigo-600">
+                    Rs. {{ similar_product.price|floatformat:2 }}
+                  </p>
+                </div>
+              </div>
+            {% empty %}
+              <p class="text-sm text-gray-500">No similar products found.</p>
+            {% endfor %}
+          </div>
+        </div>
+      </aside>
     </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const mainImage = document.getElementById('main-product-image');
+    const thumbnails = document.querySelectorAll('.thumbnail-image');
+
+    thumbnails.forEach(thumbnail => {
+      thumbnail.addEventListener('click', function() {
+        const fullImageUrl = this.getAttribute('data-full-image');
+        
+        // Remove active class from all thumbnails
+        thumbnails.forEach(t => t.classList.remove('border-indigo-600'));
+        
+        // Add active class to clicked thumbnail
+        this.classList.add('border-indigo-600');
+        
+        // Fade out and in effect
+        mainImage.style.opacity = '0';
+        setTimeout(() => {
+          mainImage.src = fullImageUrl;
+          mainImage.style.opacity = '1';
+        }, 300); // Wait for the transition
+      });
+    });
+  });
+</script>
 {% endblock %}

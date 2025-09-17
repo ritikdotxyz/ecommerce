@@ -10,4 +10,3 @@ admin.site.register(Discount)
 admin.site.register(Order)
 admin.site.register(OrderItems)
 admin.site.register(Cart)
-

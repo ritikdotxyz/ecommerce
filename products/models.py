@@ -52,9 +52,12 @@ class ProductImage(models.Model):
 
 
 class Cart(models.Model):
-    product_id = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="products")
+    product_id = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name="products"
+    )
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
+    total = models.FloatField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 

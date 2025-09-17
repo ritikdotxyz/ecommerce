@@ -17,6 +17,10 @@ def home(request):
     products = Product.objects.all()
     categories = ProductCategory.objects.all()
 
+    # cart_items = Cart.objects.filter(user=request.user)
+    # cart_items_count = len([item for item in cart_items])
+    # print(cart_items_count)
+
     discount_amts = [calc_discount_amt(product) for product in products]
 
     return render(
@@ -26,6 +30,7 @@ def home(request):
             "products": products,
             "discount_amts": discount_amts,
             "categories": categories,
+            # "cart_items_count": cart_items_count,
         },
     )
 
@@ -45,15 +50,26 @@ def product_detail(request, id):
     product = Product.objects.get(id=id)
     discount_amount = calc_discount_amt(product)
 
+    similar_products = Product.objects.filter(category=product.category)
+    similar_products = [prod for prod in similar_products if prod != product]
+
     return render(
         request,
         "products/product_detail.html",
-        {"product": product, "discount_amt": discount_amount},
+        {"product": product, "discount_amt": discount_amount, "similar_products":similar_products},
     )
 
 
 def products_page(request):
-    return render(request, "products/products_page.html")
+    product_by_category = {}
+    categories = ProductCategory.objects.all()
+
+    for category in categories:
+        product_by_category[category] = Product.objects.filter(category=category)
+
+    print(product_by_category)
+
+    return render(request, "products/products_page.html", {"product_by_category":product_by_category})
 
 
 def add_to_cart(request, product_id):
@@ -68,6 +84,7 @@ def add_to_cart(request, product_id):
         return redirect("login")
 
 
+@login_required
 def remove_from_cart(request, product_id):
     if request.user.is_authenticated:
         cart_item = Cart.objects.filter(product_id_id=product_id, user=request.user)
@@ -86,13 +103,16 @@ def cart(request):
         return render(request, "products/cart.html", {"cart_items": []})
 
     for item in cart_items:
-        total += item.product_id.price
+        item.total = item.quantity * item.product_id.price
+        total += item.total
+        item.save()
 
     return render(
         request, "products/cart.html", {"cart_items": cart_items, "total": total}
     )
 
 
+@login_required
 def order(request):
     first_name = request.POST.get("first_name")
     last_name = request.POST.get("last_name")
@@ -141,7 +161,7 @@ def checkout(request):
         return render(request, "products/cart.html", {"cart_items": []})
 
     for item in cart_items:
-        total += item.product_id.price
+        total += item.total
 
     user_address = UserAddress.objects.filter(user=request.user)
     # user = CustomUser.objects.filter(user=request.user).first()
@@ -179,7 +199,7 @@ def update_qunatity(request, product_id, operation, to):
     cart_items = Cart.objects.filter(user=request.user)
     if not cart_items.exists:
         return redirect(to)
-    
+
     cart_item = Cart.objects.get(product_id=product_id)
     if operation == "+":
         cart_item.quantity += 1
@@ -190,5 +210,5 @@ def update_qunatity(request, product_id, operation, to):
         cart_item.quantity -= 1
 
     cart_item.save()
-    
+
     return redirect(to)
