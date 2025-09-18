@@ -26,4 +26,5 @@ urlpatterns = [
         views.update_qunatity,
         name="update_quantity",
     ),
+    path("search", views.search, name="search")
 ]

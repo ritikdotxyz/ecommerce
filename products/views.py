@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
 from .models import Product, Cart, ProductCategory, Order, OrderItems
 from users.models import UserAddress, CustomUser
@@ -33,6 +34,13 @@ def home(request):
             # "cart_items_count": cart_items_count,
         },
     )
+
+def search(request):
+    if request.method == "POST":
+        query = request.POST.get('query')  
+        results = Product.objects.filter(Q(name__icontains=query)) if query else []
+        return render(request, "products/search_result.html", {"results": results, "query": query})
+    return redirect("home")
 
 
 def product_by_category(request, category_id):
