@@ -4,6 +4,7 @@ from django.contrib.auth import logout
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import CustomUser
 from .forms import CustomerCreationForm, LoginForm
@@ -17,7 +18,15 @@ def api_login(request):
     user = authenticate(request, email=email, password=password)
 
     if user:
-        return Response({"message": "Login Successful"}, status=status.HTTP_200_OK)
+        refresh = RefreshToken.for_user(user)
+        return Response(
+            {
+                "message": "Login Successful",
+                "refresh": str(refresh),
+                "access": str(refresh.access_token),
+            },
+            status=status.HTTP_200_OK,
+        )
     return Response({"message": "Failed to login"}, status=status.HTTP_400_BAD_REQUEST)
 
 
