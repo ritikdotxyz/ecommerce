@@ -1,7 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework import status
 
+from .serializers import ProductSerializer, ProductCategorySerializer
 from .models import Product, Cart, ProductCategory, Order, OrderItems
 from users.models import UserAddress, CustomUser
 
@@ -35,11 +40,14 @@ def home(request):
         },
     )
 
+
 def search(request):
     if request.method == "POST":
-        query = request.POST.get('query')  
+        query = request.POST.get("query")
         results = Product.objects.filter(Q(name__icontains=query)) if query else []
-        return render(request, "products/search_result.html", {"results": results, "query": query})
+        return render(
+            request, "products/search_result.html", {"results": results, "query": query}
+        )
     return redirect("home")
 
 
@@ -64,7 +72,11 @@ def product_detail(request, id):
     return render(
         request,
         "products/product_detail.html",
-        {"product": product, "discount_amt": discount_amount, "similar_products":similar_products},
+        {
+            "product": product,
+            "discount_amt": discount_amount,
+            "similar_products": similar_products,
+        },
     )
 
 
@@ -77,7 +89,11 @@ def products_page(request):
 
     print(product_by_category)
 
-    return render(request, "products/products_page.html", {"product_by_category":product_by_category})
+    return render(
+        request,
+        "products/products_page.html",
+        {"product_by_category": product_by_category},
+    )
 
 
 def add_to_cart(request, product_id):
@@ -220,3 +236,69 @@ def update_qunatity(request, product_id, operation, to):
     cart_item.save()
 
     return redirect(to)
+
+
+@api_view(["GET"])
+def api_prodcuts(request):
+    products = Product.objects.all()
+    serializer = ProductSerializer(products, many=True)
+    return Response(serializer.data, status.HTTP_200_OK)
+
+@api_view(["GET"])
+def api_category(request):
+    categories = ProductCategory.objects.all()
+    serializer = ProductCategorySerializer(categories, many=True)
+    return Response(serializer.data, status.HTTP_200_OK)
+
+@api_view(["GET", "PATCH", "DELETE"])
+@permission_classes([IsAuthenticated])
+def api_prodcut(request, id):
+    try:
+        product = Product.objects.get(id=id)
+    except Product.DoesNotExist:
+        return Response(status.HTTP_404_NOT_FOUND)
+    
+    if request.method == "GET":
+        serializer = ProductSerializer(product, many=False)
+        return Response(serializer.data, status.HTTP_200_OK)
+
+    elif request.method == "PATCH":
+        serializer = ProductSerializer(product, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status.HTTP_200_OK)
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == "DELETE":
+        product.delete()
+        return Response(status.HTTP_204_NO_CONTENT)
+    
+    else:
+        return Response(status.HTTP_400_BAD_REQUEST)
+    
+
+@api_view(["GET", "PATCH", "DELETE"])
+@permission_classes([IsAuthenticated])
+def api_category(request, id):
+    try:
+        category = ProductCategory.objects.get(id=id)
+    except ProductCategory.DoesNotExist:
+        return Response(status.HTTP_404_NOT_FOUND)
+    
+    if request.method == "GET":
+        serializer = ProductCategorySerializer(category, many=False)
+        return Response(serializer.data, status.HTTP_200_OK)
+
+    elif request.method == "PATCH":
+        serializer = ProductCategorySerializer(category, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status.HTTP_200_OK)
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == "DELETE":
+        category.delete()
+        return Response(status.HTTP_204_NO_CONTENT)
+    
+    else:
+        return Response(status.HTTP_400_BAD_REQUEST)    

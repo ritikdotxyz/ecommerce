@@ -26,5 +26,11 @@ urlpatterns = [
         views.update_qunatity,
         name="update_quantity",
     ),
-    path("search", views.search, name="search")
+    path("search", views.search, name="search"),
+    path("api/products/", views.api_prodcuts, name="api_products"),
+    path("api/categories/", views.api_category, name="api_categories"),
+    path("api/product/<int:id>/", views.api_prodcut, name="api_product"),
+    path("api/category/<int:id>/", views.api_category, name="api_category"),
+
+
 ]

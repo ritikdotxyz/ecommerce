@@ -2,10 +2,12 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated
+
 
 from .models import CustomUser
 from .forms import CustomerCreationForm, LoginForm
@@ -46,7 +48,7 @@ def api_signup(request):
             )
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@login_required
+
 @api_view(["POST"])
 def api_logout(request):
     try:
@@ -75,6 +77,7 @@ def user_list(request):
 
 
 @api_view(["GET", "PUT", "DELETE"])
+@permission_classes([IsAuthenticated])
 def user_detail(request, id):
     try:
         user = CustomUser.objects.get(id=id)
