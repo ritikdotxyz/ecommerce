@@ -1,6 +1,8 @@
 from django.urls import path
 
 from . import views
+from .api import views as api_views
+
 
 urlpatterns = [
     path("", views.home, name="home"),
@@ -27,11 +29,11 @@ urlpatterns = [
         name="update_quantity",
     ),
     path("search", views.search, name="search"),
-    path("api/products/", views.api_prodcuts, name="api_products"),
-    path("api/categories/", views.api_category, name="api_categories"),
-    path("api/product/<int:id>/", views.api_prodcut, name="api_product"),
-    path("api/category/<int:id>/", views.api_category, name="api_category"),
-    path("api/cart/<int:cart_id>/", views.api_cart, name="api_cart"),
 
-
+    # api
+    path("api/products/", api_views.api_prodcuts, name="api_products"),
+    path("api/categories/", api_views.api_category, name="api_categories"),
+    path("api/product/<int:id>/", api_views.api_prodcut, name="api_product"),
+    path("api/category/<int:id>/", api_views.api_category, name="api_category"),
+    path("api/cart/<int:cart_id>/", api_views.api_cart, name="api_cart"),
 ]
