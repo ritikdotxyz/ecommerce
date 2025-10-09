@@ -34,7 +34,7 @@
           <ul class="space-y-2">
             {% for category in categories %}
               <li>
-                <a href="{% url 'products_category' category.id %}" 
+                <a href="{% url 'products_category' category.slug %}" 
                    class="flex items-center justify-between px-4 py-3 rounded-lg text-gray-700 font-medium hover:bg-indigo-50 hover:text-indigo-600 transition-all duration-200">
                    <span>{{ category.name }}</span>
                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -54,7 +54,7 @@
           {% for product in products %}
           <div class="bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-2xl flex flex-col">
             
-            <a href="{% url 'product_detail' product.id %}" class="relative w-full h-64 overflow-hidden">
+            <a href="{% url 'product_detail' product.slug %}" class="relative w-full h-64 overflow-hidden">
               {% if product.images.first %}
                 <img src="{{ product.images.first.image.url }}" 
                      alt="{{ product.name }}" 
@@ -68,7 +68,7 @@
 
             <div class="p-6 flex flex-col flex-grow">
               <span class="text-xs font-medium text-indigo-500 mb-1 uppercase">{{ product.category.name }}</span>
-              <a href="{% url 'product_detail' product.id %}">
+              <a href="{% url 'product_detail' product.slug %}">
                 <h2 class="text-lg font-bold text-gray-900 mb-2 truncate hover:text-indigo-600 transition-colors duration-200">
                   {{ product.name }}
                 </h2>

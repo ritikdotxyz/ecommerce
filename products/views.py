@@ -43,19 +43,19 @@ def search(request):
     return redirect("home")
 
 
-def product_by_category(request, category_id):
-    products = Product.objects.filter(category_id=category_id)
-    category = ProductCategory.objects.get(id=category_id)
+def product_by_category(request, slug):
+    products = Product.objects.filter(category__slug=slug)
+    category = ProductCategory.objects.get(slug=slug)
 
     return render(
         request, "products/products.html", {"products": products, "category": category}
     )
 
 
-def product_detail(request, id):
+def product_detail(request, slug):
     discount_amount = None
 
-    product = Product.objects.get(id=id)
+    product = Product.objects.get(slug=slug)
     discount_amount = calc_discount_amt(product)
 
     similar_products = Product.objects.filter(category=product.category)
