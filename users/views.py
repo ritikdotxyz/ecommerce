@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login
 from django.http import HttpResponse
 from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 
-from .models import CustomUser
+from .models import CustomUser, UserAddress
 from .forms import CustomerCreationForm, LoginForm
 
 
@@ -55,3 +56,13 @@ def signup(request):
 def log_out(request):
     logout(request)
     return redirect("login")
+
+
+@login_required
+def profile(request):
+    user = request.user
+    try:
+        user_address = UserAddress.objects.get(user=request.user)
+    except UserAddress.DoesNotExist:
+        user_address = {}
+    return render(request, "users/profile.html", {"user": user, "user_address": user_address})

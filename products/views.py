@@ -176,7 +176,8 @@ def checkout(request):
 
     if not user_address.exists():
         user_address = None
-    user_address = user_address.first()
+    else:
+        user_address = user_address.first()
 
     return render(
         request,
