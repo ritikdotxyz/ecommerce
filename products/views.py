@@ -35,11 +35,14 @@ def home(request):
         },
     )
 
+
 def search(request):
     if request.method == "POST":
-        query = request.POST.get('query')  
+        query = request.POST.get("query")
         results = Product.objects.filter(Q(name__icontains=query)) if query else []
-        return render(request, "products/search_result.html", {"results": results, "query": query})
+        return render(
+            request, "products/search_result.html", {"results": results, "query": query}
+        )
     return redirect("home")
 
 
@@ -64,7 +67,11 @@ def product_detail(request, slug):
     return render(
         request,
         "products/product_detail.html",
-        {"product": product, "discount_amt": discount_amount, "similar_products":similar_products},
+        {
+            "product": product,
+            "discount_amt": discount_amount,
+            "similar_products": similar_products,
+        },
     )
 
 
@@ -77,7 +84,11 @@ def products_page(request):
 
     print(product_by_category)
 
-    return render(request, "products/products_page.html", {"product_by_category":product_by_category})
+    return render(
+        request,
+        "products/products_page.html",
+        {"product_by_category": product_by_category},
+    )
 
 
 def add_to_cart(request, product_id):
@@ -122,18 +133,18 @@ def cart(request):
 
 @login_required
 def order(request):
-    first_name = request.POST.get("first_name")
-    last_name = request.POST.get("last_name")
-    address = request.POST.get("address")
-    phone_number = request.POST.get("phone_number")
+    # first_name = request.POST.get("first_name")
+    # last_name = request.POST.get("last_name")
+    # address = request.POST.get("address")
+    # phone_number = request.POST.get("phone_number")
 
     user = CustomUser.objects.get(id=request.user.id)
-    user.phone_no = phone_number
-    user.first_name = first_name
-    user.last_name = last_name
-    user.save()
+    # user.phone_no = phone_number
+    # user.first_name = first_name
+    # user.last_name = last_name
+    # user.save()
 
-    UserAddress.objects.get_or_create(user=user, address_1=address)
+    UserAddress.objects.get_or_create(user=user)
 
     cart_items = Cart.objects.filter(user=request.user)
     if not cart_items.exists():
@@ -155,11 +166,21 @@ def order(request):
 
     order_items = OrderItems.objects.filter(order_id=order)
 
+    # deduct from the stock
+    for item in cart_items:
+        product = Product.objects.get(id=item.product_id.id)
+        product.quantity = product.quantity - item.quantity
+        product.save()
+
     cart_items.delete()
 
     return render(
         request, "products/payment.html", {"order_items": order_items, "order": order}
     )
+
+
+def payment_success(request):
+    return render(request, "products/success.html")
 
 
 def checkout(request):

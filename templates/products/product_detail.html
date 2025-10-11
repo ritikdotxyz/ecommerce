@@ -60,12 +60,17 @@
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-green-500" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
               </svg>
-              <span class="text-green-600 font-semibold">In Stock</span> 
+              {% if product.quantity > 0 %}
+              <span class="text-green-600 font-semibold">In Stock</span>
+              {% else %}
+              <span class="text-red-600 font-semibold">Out of Stock</span>
+              {% endif %}
               <span class="ml-2">({{ product.quantity }} available)</span>
             </div>
             
             <div class="mt-8 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
               <a href="{% url 'add_to_cart' product.id %}" class="w-full">
+              {% if product.quantity > 0 %}
                 <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-full transition-all duration-200 transform hover:scale-105 shadow-lg">
                   Add to Cart
                 </button>
@@ -74,6 +79,7 @@
                 <button class="w-full bg-transparent border border-indigo-600 text-indigo-600 font-semibold py-3 rounded-full transition-all duration-200 transform hover:scale-105 hover:bg-indigo-600 hover:text-white">
                   Buy Now
                 </button>
+                {% endif %}
               </a>
             </div>
           </div>

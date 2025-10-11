@@ -26,7 +26,7 @@ def login(request):
             auth_login(request, user)
             return redirect("home")
         else:
-            message = "Invalid username or password"
+            message = "Invalid email or password"
             render(request, "users/login.html", {"form": form, "message": message})
 
     return render(request, "users/login.html", {"form": form, "message": message})
@@ -65,4 +65,6 @@ def profile(request):
         user_address = UserAddress.objects.get(user=request.user)
     except UserAddress.DoesNotExist:
         user_address = {}
-    return render(request, "users/profile.html", {"user": user, "user_address": user_address})
+    return render(
+        request, "users/profile.html", {"user": user, "user_address": user_address}
+    )
