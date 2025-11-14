@@ -10,7 +10,9 @@ from users.models import UserAddress, CustomUser
 def calc_discount_amt(product):
     if product.discount:
         discount_percent = product.discount.discount_percent
-        discount_amount = product.price - (product.price * (discount_percent / 100))
+        discount_amount = product.price - (
+            product.price * (discount_percent / 100)
+        )
         return discount_amount
     return None
 
@@ -40,9 +42,13 @@ def home(request):
 def search(request):
     if request.method == "POST":
         query = request.POST.get("query")
-        results = Product.objects.filter(Q(name__icontains=query)) if query else []
+        results = (
+            Product.objects.filter(Q(name__icontains=query)) if query else []
+        )
         return render(
-            request, "products/search_result.html", {"results": results, "query": query}
+            request,
+            "products/search_result.html",
+            {"results": results, "query": query},
         )
     return redirect("home")
 
@@ -52,7 +58,9 @@ def product_by_category(request, slug):
     category = ProductCategory.objects.get(slug=slug)
 
     return render(
-        request, "products/products.html", {"products": products, "category": category}
+        request,
+        "products/products.html",
+        {"products": products, "category": category},
     )
 
 
@@ -81,7 +89,9 @@ def products_page(request):
     categories = ProductCategory.objects.all()
 
     for category in categories:
-        product_by_category[category] = Product.objects.filter(category=category)
+        product_by_category[category] = Product.objects.filter(
+            category=category
+        )
 
     print(product_by_category)
 
@@ -107,7 +117,9 @@ def add_to_cart(request, product_id):
 @login_required
 def remove_from_cart(request, product_id):
     if request.user.is_authenticated:
-        cart_item = Cart.objects.filter(product_id_id=product_id, user=request.user)
+        cart_item = Cart.objects.filter(
+            product_id_id=product_id, user=request.user
+        )
 
         cart_item.delete()
         return redirect("cart")
@@ -128,7 +140,9 @@ def cart(request):
         item.save()
 
     return render(
-        request, "products/cart.html", {"cart_items": cart_items, "total": total}
+        request,
+        "products/cart.html",
+        {"cart_items": cart_items, "total": total},
     )
 
 
@@ -176,7 +190,9 @@ def order(request):
     cart_items.delete()
 
     return render(
-        request, "products/payment.html", {"order_items": order_items, "order": order}
+        request,
+        "products/payment.html",
+        {"order_items": order_items, "order": order},
     )
 
 
