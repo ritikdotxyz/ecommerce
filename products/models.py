@@ -2,13 +2,19 @@ from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 from users.models import CustomUser
+from .utils import generate_slug
 
 
 class ProductCategory(models.Model):
     name = models.CharField(max_length=150)
+    slug = models.SlugField(unique=True)
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        self.slug = generate_slug(self.name, ProductCategory)
+        super(ProductCategory, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -32,6 +38,7 @@ class Product(models.Model):
     name = models.CharField(max_length=150)
     description = models.TextField()
     category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE)
+    slug = models.SlugField(unique=True)
     price = models.FloatField()
     discount = models.ForeignKey(
         Discount, on_delete=models.CASCADE, null=True, blank=True
@@ -39,6 +46,10 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
     quantity = models.IntegerField(default=0)
+
+    def save(self, *args, **kwargs):
+        self.slug = generate_slug(self.name, Product)
+        super(Product, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name

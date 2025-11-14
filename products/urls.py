@@ -6,20 +6,24 @@ from .api import views as api_views
 
 urlpatterns = [
     path("", views.home, name="home"),
-    path("product/<int:id>", views.product_detail, name="product_detail"),
+    path("product/<str:slug>", views.product_detail, name="product_detail"),
     path("products/", views.products_page, name="products_page"),
     path("cart/", views.cart, name="cart"),
     path("order/", views.order, name="order"),
-    path("add-to-cart/<int:product_id>", views.add_to_cart, name="add_to_cart"),
+    path(
+        "add-to-cart/<int:product_id>", views.add_to_cart, name="add_to_cart"
+    ),
     path(
         "remove-from-cart/<int:product_id>",
         views.remove_from_cart,
         name="remove_from_cart",
     ),
     path("checkout/", views.checkout, name="checkout"),
-    path("checkout/<int:product_id>", views.direct_order, name="direct_checkout"),
     path(
-        "products/category/<int:category_id>",
+        "checkout/<int:product_id>", views.direct_order, name="direct_checkout"
+    ),
+    path(
+        "products/category/<str:slug>",
         views.product_by_category,
         name="products_category",
     ),
@@ -29,11 +33,5 @@ urlpatterns = [
         name="update_quantity",
     ),
     path("search", views.search, name="search"),
-
-    # api
-    path("api/products/", api_views.api_prodcuts, name="api_products"),
-    path("api/categories/", api_views.api_category, name="api_categories"),
-    path("api/product/<int:id>/", api_views.api_prodcut, name="api_product"),
-    path("api/category/<int:id>/", api_views.api_category, name="api_category"),
-    path("api/cart/<int:cart_id>/", api_views.api_cart, name="api_cart"),
+    path("success/", views.payment_success, name="success"),
 ]
