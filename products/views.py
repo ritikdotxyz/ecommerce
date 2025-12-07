@@ -1,15 +1,19 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from pprint import pprint
+from django.http import HttpResponse
 
-from .models import Product, Cart, ProductCategory, Order, OrderItems
+from .models import Product, Cart, ProductCategory, Order, OrderItems, Review
 from users.models import UserAddress, CustomUser
 
 
 def calc_discount_amt(product):
     if product.discount:
         discount_percent = product.discount.discount_percent
-        discount_amount = product.price - (product.price * (discount_percent / 100))
+        discount_amount = product.price - (
+            product.price * (discount_percent / 100)
+        )
         return discount_amount
     return None
 
@@ -39,9 +43,13 @@ def home(request):
 def search(request):
     if request.method == "POST":
         query = request.POST.get("query")
-        results = Product.objects.filter(Q(name__icontains=query)) if query else []
+        results = (
+            Product.objects.filter(Q(name__icontains=query)) if query else []
+        )
         return render(
-            request, "products/search_result.html", {"results": results, "query": query}
+            request,
+            "products/search_result.html",
+            {"results": results, "query": query},
         )
     return redirect("home")
 
@@ -51,7 +59,9 @@ def product_by_category(request, slug):
     category = ProductCategory.objects.get(slug=slug)
 
     return render(
-        request, "products/products.html", {"products": products, "category": category}
+        request,
+        "products/products.html",
+        {"products": products, "category": category},
     )
 
 
@@ -64,6 +74,9 @@ def product_detail(request, slug):
     similar_products = Product.objects.filter(category=product.category)
     similar_products = [prod for prod in similar_products if prod != product]
 
+    reviews = get_reviews(slug)
+    pprint(reviews)
+
     return render(
         request,
         "products/product_detail.html",
@@ -71,6 +84,7 @@ def product_detail(request, slug):
             "product": product,
             "discount_amt": discount_amount,
             "similar_products": similar_products,
+            "reviews": reviews,
         },
     )
 
@@ -80,7 +94,9 @@ def products_page(request):
     categories = ProductCategory.objects.all()
 
     for category in categories:
-        product_by_category[category] = Product.objects.filter(category=category)
+        product_by_category[category] = Product.objects.filter(
+            category=category
+        )
 
     print(product_by_category)
 
@@ -106,7 +122,9 @@ def add_to_cart(request, product_id):
 @login_required
 def remove_from_cart(request, product_id):
     if request.user.is_authenticated:
-        cart_item = Cart.objects.filter(product_id_id=product_id, user=request.user)
+        cart_item = Cart.objects.filter(
+            product_id_id=product_id, user=request.user
+        )
 
         cart_item.delete()
         return redirect("cart")
@@ -127,7 +145,9 @@ def cart(request):
         item.save()
 
     return render(
-        request, "products/cart.html", {"cart_items": cart_items, "total": total}
+        request,
+        "products/cart.html",
+        {"cart_items": cart_items, "total": total},
     )
 
 
@@ -175,7 +195,9 @@ def order(request):
     cart_items.delete()
 
     return render(
-        request, "products/payment.html", {"order_items": order_items, "order": order}
+        request,
+        "products/payment.html",
+        {"order_items": order_items, "order": order},
     )
 
 
@@ -242,3 +264,45 @@ def update_qunatity(request, product_id, operation, to):
     cart_item.save()
 
     return redirect(to)
+
+
+def get_reviews(slug):
+    # only one level of nesting of review
+    reviews = Review.objects.filter(product__slug=slug)
+    _reviews = []
+    for review in reviews:
+        if review.reply:
+            continue
+
+        new = review.__dict__
+        replies = Review.objects.filter(reply=review)
+        user = CustomUser.objects.filter(id=review.user.id).first()
+
+        if user:
+            new["user"] = user
+
+        if replies:
+            new["replies"] = replies
+
+        _reviews.append(new)
+
+    return _reviews
+
+
+def write_review(request, id, slug):
+    if request.method == "POST":
+        comment = request.POST.get("comment")
+
+        product = Product.objects.filter(slug=slug).first()
+        if not product:
+            return HttpResponse("Successful Failed")
+
+        reply = Review.objects.filter(id=id).first()
+
+        review = Review.objects.create(
+            product=product, user=request.user, comment=comment, reply=reply
+        )
+
+        review.save()
+
+        return redirect("product_detail", slug=slug)

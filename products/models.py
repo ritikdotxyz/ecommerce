@@ -7,7 +7,7 @@ from .utils import generate_slug
 
 class ProductCategory(models.Model):
     name = models.CharField(max_length=150)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, null=True)
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
@@ -95,3 +95,17 @@ class OrderItems(models.Model):
 
     def __str__(self):
         return f"{self.product_id.name} - {self.quantity}"
+
+
+class Review(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    comment = models.TextField()
+    reply = models.ForeignKey(
+        "self", on_delete=models.CASCADE, null=True, blank=True
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.user.email} - {self.product.name} - {self.comment}"
