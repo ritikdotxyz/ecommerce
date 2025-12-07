@@ -1,10 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login
-from django.http import HttpResponse
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 
-from .models import CustomUser, UserAddress
+from .models import UserAddress
 from .forms import CustomerCreationForm, LoginForm
 
 

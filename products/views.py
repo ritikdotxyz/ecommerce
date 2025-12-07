@@ -292,6 +292,7 @@ def get_reviews(slug):
 def write_review(request, id, slug):
     if request.method == "POST":
         comment = request.POST.get("comment")
+        rating = request.POST.get("rating")
 
         product = Product.objects.filter(slug=slug).first()
         if not product:
@@ -300,7 +301,11 @@ def write_review(request, id, slug):
         reply = Review.objects.filter(id=id).first()
 
         review = Review.objects.create(
-            product=product, user=request.user, comment=comment, reply=reply
+            product=product,
+            user=request.user,
+            comment=comment,
+            reply=reply,
+            rating=rating,
         )
 
         review.save()

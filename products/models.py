@@ -101,6 +101,7 @@ class Review(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     comment = models.TextField()
+    rating = models.IntegerField(default=0)
     reply = models.ForeignKey(
         "self", on_delete=models.CASCADE, null=True, blank=True
     )
