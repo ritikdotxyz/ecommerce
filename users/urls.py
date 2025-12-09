@@ -41,4 +41,5 @@ urlpatterns = [
         name="password_reset_complete",
     ),
     path("profile/", views.profile, name="profile"),
+    path("contact/", views.contact, name="contact"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

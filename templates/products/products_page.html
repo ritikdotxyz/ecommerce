@@ -1,33 +1,39 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block title %}DRONEBASE | Featured Drones{% endblock %}
+
 {% block content %}
-<div class="bg-gray-100 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+<div class="bg-gray-50 min-h-screen py-16 px-4 sm:px-6 lg:px-8">
   <div class="max-w-7xl mx-auto">
 
-    <h1 class="text-4xl font-extrabold text-gray-900 mb-10 text-center">Featured Products</h1>
+    <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-16 text-center tracking-tight">
+        Featured Drone Missions
+    </h1>
 
     {% for category, products_list in product_by_category.items %}
       {% if products_list %}
-        <div class="mb-16">
-          <div class="flex items-center justify-between mb-6">
-            <h2 class="text-3xl font-bold text-gray-800">{{ category.name }}</h2>
-            <a href="{% url 'products_category' category.id %}" class="text-indigo-600 font-semibold hover:underline">
-              View All
+        <div class="mb-20">
+          
+          <div class="flex items-center justify-between mb-8 pb-2 border-b-2 border-sky-100">
+            <h2 class="text-3xl font-extrabold text-gray-800 tracking-tight">{{ category.name }}</h2>
+            <a href="{% url 'products_category' category.slug %}" class="text-sky-600 font-semibold hover:text-sky-700 hover:underline transition-colors duration-200 flex items-center space-x-1">
+              <span>View All</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
             </a>
           </div>
 
           <div class="carousel-container relative">
-            <div class="carousel-track flex space-x-6 overflow-x-auto scroll-smooth snap-x">
+            <div class="carousel-track flex space-x-8 overflow-x-scroll scroll-smooth snap-x scrollbar-hide">
               {% for product in products_list %}
-                <div class="carousel-item flex-shrink-0 snap-center w-64 md:w-80">
-                  <div class="bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-2xl flex flex-col">
+                <div class="carousel-item flex-shrink-0 snap-center w-64 sm:w-72">
+                  <div class="bg-white rounded-xl shadow-xl overflow-hidden transition-all duration-300 transform group border border-gray-100 hover:shadow-2xl hover:border-sky-300 flex flex-col h-full">
                     
                     <a href="{% url 'product_detail' product.slug %}" class="relative w-full h-48 overflow-hidden">
                       {% if product.images.first %}
                         <img src="{{ product.images.first.image.url }}" 
                              alt="{{ product.name }}" 
-                             class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                       {% else %}
                         <div class="h-full w-full flex items-center justify-center bg-gray-200 text-gray-500 text-sm">
                           Image not available
@@ -37,18 +43,20 @@
 
                     <div class="p-4 flex flex-col flex-grow">
                       <a href="{% url 'product_detail' product.slug %}">
-                        <h3 class="text-lg font-bold text-gray-900 mb-1 truncate hover:text-indigo-600 transition-colors duration-200">
+                        <h3 class="text-xl font-bold text-gray-900 mb-1 line-clamp-2 hover:text-sky-700 transition-colors duration-200">
                           {{ product.name }}
                         </h3>
                       </a>
-                      <p class="text-sm text-gray-600 line-clamp-2">{{ product.description }}</p>
+                      <p class="text-sm text-gray-500 line-clamp-2 flex-grow mb-3">{{ product.description }}</p>
 
                       <div class="flex items-center justify-between mt-auto pt-3 border-t border-gray-100">
-                        <span class="text-2xl font-bold text-indigo-600">
+                        <span class="text-2xl font-extrabold text-sky-700">
                           Rs. {{ product.price|floatformat:2 }}
                         </span>
+                        
                         <a href="{% url 'add_to_cart' product.id %}" 
-                           class="bg-indigo-600 text-white p-2 rounded-full hover:bg-indigo-700 transition">
+                           class="bg-sky-600 text-white p-2.5 rounded-full hover:bg-sky-700 transition duration-300 shadow-md shadow-sky-500/30 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-sky-300"
+                           title="Add to Cart">
                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.182 1.78.694 1.78H19m-6-6v4m0 0l-2-2m2 2l2-2" />
                            </svg>
@@ -60,14 +68,14 @@
               {% endfor %}
             </div>
 
-            <button class="carousel-prev absolute left-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:bg-gray-200 focus:outline-none">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            <button class="carousel-prev absolute z-10 left-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-3 shadow-xl hover:bg-sky-100 focus:outline-none transition-colors duration-200 -ml-4" title="Previous">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" />
                 </svg>
             </button>
-            <button class="carousel-next absolute right-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:bg-gray-200 focus:outline-none">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            <button class="carousel-next absolute z-10 right-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-3 shadow-xl hover:bg-sky-100 focus:outline-none transition-colors duration-200 -mr-4" title="Next">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7" />
                 </svg>
             </button>
 
@@ -78,8 +86,21 @@
 
   </div>
 </div>
+
+<style>
+/* For Chrome, Safari and Opera */
+.carousel-track::-webkit-scrollbar {
+    display: none;
+}
+/* For IE, Edge and Firefox */
+.carousel-track {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+</style>
+
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
   const carousels = document.querySelectorAll('.carousel-container');
 
   carousels.forEach(container => {
@@ -89,19 +110,36 @@
 
     // Function to check and update button visibility
     const updateButtons = () => {
-      prevBtn.style.display = track.scrollLeft === 0 ? 'none' : 'block';
-      nextBtn.style.display = track.scrollWidth - track.scrollLeft <= track.clientWidth ? 'none' : 'block';
+      // Show/hide based on scroll position
+      prevBtn.style.display = track.scrollLeft <= 10 ? 'none' : 'block';
+      nextBtn.style.display = track.scrollWidth - track.scrollLeft - track.clientWidth <= 10 ? 'none' : 'block';
     };
 
     // Smooth scroll functionality
     nextBtn.addEventListener('click', () => {
-      const itemWidth = track.querySelector('.carousel-item').offsetWidth + 24; // 24px for space-x-6
-      track.scrollBy({ left: itemWidth, behavior: 'smooth' });
+      // Calculate the scroll distance to move one full card, plus the margin
+      const firstItem = track.querySelector('.carousel-item');
+      if (!firstItem) return;
+      
+      const itemWidth = firstItem.offsetWidth;
+      const margin = 32; // Half of space-x-8 (16px on each side) = 32px gap between items
+
+      // Scroll one full card width + margin (snap point)
+      track.scrollBy({ left: itemWidth + margin, behavior: 'smooth' });
+
+      // Delay button update to allow smooth scroll animation to finish
+      setTimeout(updateButtons, 500);
     });
 
     prevBtn.addEventListener('click', () => {
-      const itemWidth = track.querySelector('.carousel-item').offsetWidth + 24;
-      track.scrollBy({ left: -itemWidth, behavior: 'smooth' });
+      const firstItem = track.querySelector('.carousel-item');
+      if (!firstItem) return;
+      
+      const itemWidth = firstItem.offsetWidth;
+      const margin = 32;
+
+      track.scrollBy({ left: -(itemWidth + margin), behavior: 'smooth' });
+      setTimeout(updateButtons, 500);
     });
 
     // Update buttons on scroll and resize

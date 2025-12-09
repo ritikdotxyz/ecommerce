@@ -35,4 +35,6 @@ urlpatterns = [
     path(
         "review/<int:id>/<str:slug>", views.write_review, name="write_review"
     ),
+    path("cart-item-count/", views.get_cart_count, name="cart-item-count"),
+    path("order-history/", views.order_history, name="order_history"),
 ]

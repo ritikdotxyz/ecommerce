@@ -69,3 +69,7 @@ def profile(request):
         "users/profile.html",
         {"user": user, "user_address": user_address},
     )
+
+
+def contact(request):
+    return render(request, "contact.html")

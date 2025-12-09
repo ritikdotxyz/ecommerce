@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from pprint import pprint
 from django.http import HttpResponse
+import json
 
 from .models import Product, Cart, ProductCategory, Order, OrderItems, Review
 from users.models import UserAddress, CustomUser
@@ -311,3 +312,20 @@ def write_review(request, id, slug):
         review.save()
 
         return redirect("product_detail", slug=slug)
+
+
+def get_cart_count(request):
+    cart_items = Cart.objects.filter(user=request.user)
+    cart_item_count = len(cart_items)
+
+    response_data = {"count": cart_item_count}
+
+    return HttpResponse(
+        json.dumps(response_data), content_type="application/json"
+    )
+
+
+def order_history(request):
+    orders = Order.objects.filter(user=request.user)
+
+    return render(request, "products/order_history.html", {"orders": orders})
