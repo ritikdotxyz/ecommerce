@@ -154,18 +154,22 @@ def cart(request):
 
 @login_required
 def order(request):
-    # first_name = request.POST.get("first_name")
-    # last_name = request.POST.get("last_name")
-    # address = request.POST.get("address")
-    # phone_number = request.POST.get("phone_number")
+    first_name = request.POST.get("first_name")
+    last_name = request.POST.get("last_name")
+    address = request.POST.get("address")
+    phone_number = request.POST.get("phone_number")
 
     user = CustomUser.objects.get(id=request.user.id)
-    # user.phone_no = phone_number
-    # user.first_name = first_name
-    # user.last_name = last_name
-    # user.save()
+    user.phone_no = phone_number
+    user.first_name = first_name
+    user.last_name = last_name
+    user.save()
 
-    UserAddress.objects.get_or_create(user=user)
+    user_add, created = UserAddress.objects.get_or_create(
+        user=user, address_1=address, city=address
+    )
+    if created:
+        user_add.save()
 
     cart_items = Cart.objects.filter(user=request.user)
     if not cart_items.exists():

@@ -64,6 +64,7 @@ def profile(request):
         user_address = UserAddress.objects.get(user=request.user)
     except UserAddress.DoesNotExist:
         user_address = {}
+
     return render(
         request,
         "users/profile.html",
