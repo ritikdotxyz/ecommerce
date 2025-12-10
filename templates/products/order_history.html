@@ -48,9 +48,9 @@
           </div>
           
           <div class="mt-6">
-             <a href="#" 
+             <a href="{% url 'order_detail' order.id %}" 
                 class="block w-full text-center bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 rounded-lg transition duration-300 shadow-md shadow-sky-500/30 focus:outline-none focus:ring-4 focus:ring-sky-300">
-                View Full Details ({{ order.items.count }} items)
+                View Full Details
              </a>
           </div>
 

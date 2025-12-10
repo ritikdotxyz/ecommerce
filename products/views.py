@@ -330,6 +330,21 @@ def get_cart_count(request):
 
 
 def order_history(request):
-    orders = Order.objects.filter(user=request.user)
+    orders = (
+        Order.objects.filter(user=request.user)
+        .order_by("created_at")
+        .reverse()
+    )
 
     return render(request, "products/order_history.html", {"orders": orders})
+
+
+def order_detail(request, id):
+    order = Order.objects.get(id=id)
+    order_items = OrderItems.objects.filter(order_id=id)
+
+    return render(
+        request,
+        "products/order_detail.html",
+        {"order_items": order_items, "order": order},
+    )
