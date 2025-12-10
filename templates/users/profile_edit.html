@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Edit Profile Information | DRONEBASE{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50 min-h-screen py-16 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-3xl mx-auto">
+
+    <div class="text-center mb-12">
+      <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-2">
+        Update Pilot Profile
+      </h1>
+      <p class="text-lg text-gray-600">Manage your personal and primary shipping details.</p>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-2xl p-8 lg:p-10 border border-gray-100">
+      
+      <form method="POST" action="{% url 'profile_edit' %}" class="space-y-8">
+        {% csrf_token %}
+
+        <h2 class="text-2xl font-bold text-gray-900 mb-6 border-b pb-3 border-sky-100">
+          Personal Details
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          <div>
+            <label for="first_name" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+            <input type="text" name="first_name" id="first_name" value="{{ request.user.first_name }}" required
+                   class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-sky-500 focus:border-sky-500 transition duration-150">
+          </div>
+
+          <div>
+            <label for="last_name" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+            <input type="text" name="last_name" id="last_name" value="{{ request.user.last_name }}" required
+                   class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-sky-500 focus:border-sky-500 transition duration-150">
+          </div>
+          
+          <div class="md:col-span-2">
+            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address (Login ID)</label>
+            <input type="email" name="email" id="email" value="{{ request.user.email }}" readonly disabled
+                   class="block w-full px-4 py-3 border border-gray-200 bg-gray-50 rounded-lg shadow-sm cursor-not-allowed">
+            <p class="mt-2 text-xs text-gray-500">Your email is your primary identifier and cannot be changed here.</p>
+          </div>
+
+          <div>
+            <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number (Optional)</label>
+            <input type="tel" name="phone" id="phone" value="{% if request.user.phone_no %}{{ request.user.phone_no }}{% endif %}"
+                   class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-sky-500 focus:border-sky-500 transition duration-150">
+          </div>
+      
+
+        </div>
+        
+        <h2 class="text-2xl font-bold text-gray-900 mb-6 border-b pt-4 pb-3 border-sky-100">
+          Primary Shipping Address
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <div class="md:col-span-2">
+              <label for="address_line1" class="block text-sm font-medium text-gray-700 mb-1">Address Line 1</label>
+              <input type="text" name="address_1" id="address_line1" value="{% if user_address.address_1 %}{{ user_address.address_1 }}{% endif %}"
+                     class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-sky-500 focus:border-sky-500 transition duration-150">
+            </div>
+
+            <div class="md:col-span-2">
+              <label for="address_line1" class="block text-sm font-medium text-gray-700 mb-1">Address Line 2</label>
+              <input type="text" name="address_2" id="address_line1" value="{% if user_address.address_2 %}{{ user_address.address_2 }}{% endif %}"
+                     class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-sky-500 focus:border-sky-500 transition duration-150">
+            </div>
+            
+            <div>
+                <label for="city" class="block text-sm font-medium text-gray-700 mb-1">City</label>
+                <input type="text" name="city" id="city" value="{% if user_address.city %}{{ user_address.city }}{% endif %}"
+                       class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-sky-500 focus:border-sky-500 transition duration-150">
+            </div>
+            
+        </div>
+        
+        <div class="pt-6 border-t border-gray-200">
+          <button type="submit"
+                  class="w-full sm:w-auto inline-flex justify-center py-3 px-8 border border-transparent rounded-full shadow-lg text-lg font-bold text-white bg-sky-600 hover:bg-sky-700 transition duration-300 focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-sky-500">
+            Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

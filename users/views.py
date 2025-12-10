@@ -74,3 +74,36 @@ def profile(request):
 
 def contact(request):
     return render(request, "contact.html")
+
+
+def profile_edit(request):
+    if request.method == "POST":
+        first_name = request.POST.get("first_name")
+        last_name = request.POST.get("last_name")
+        address_1 = request.POST.get("address_1")
+        address_2 = request.POST.get("address_2")
+        phone_number = request.POST.get("phone")
+        city = request.POST.get("city")
+
+        user = request.user
+        user.first_name = first_name
+        user.last_name = last_name
+        user.phone_no = phone_number
+        user.save()
+
+        user_address = UserAddress.objects.get(user=request.user)
+        user_address.address_1 = address_1
+        user_address.address_2 = address_2
+        user_address.city = city
+        user_address.save()
+
+        return redirect("profile")
+
+    try:
+        user_address = UserAddress.objects.get(user=request.user)
+    except UserAddress.DoesNotExist:
+        user_address = {}
+
+    return render(
+        request, "users/profile_edit.html", {"user_address": user_address}
+    )
