@@ -133,8 +133,10 @@ def remove_from_cart(request, product_id):
         return redirect("login")
 
 
-@login_required
 def cart(request):
+    if not request.user.is_authenticated:
+        return redirect("login")
+
     total = 0
     cart_items = Cart.objects.filter(user=request.user)
     if not cart_items.exists:
@@ -330,6 +332,9 @@ def get_cart_count(request):
 
 
 def order_history(request):
+    if not request.user.is_authenticated:
+        return redirect("login")
+
     orders = (
         Order.objects.filter(user=request.user)
         .order_by("created_at")

@@ -57,8 +57,10 @@ def log_out(request):
     return redirect("login")
 
 
-@login_required
 def profile(request):
+    if not request.user.is_authenticated:
+        return redirect("login")
+
     user = request.user
     try:
         user_address = UserAddress.objects.get(user=request.user)
