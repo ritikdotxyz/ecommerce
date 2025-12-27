@@ -87,8 +87,8 @@
         </div>
 
         <div>
-          <h2 class="text-2xl font-extrabold text-gray-800 mb-6 border-b pb-2 border-gray-100">2. Shipping & Payment</h2>
-          <form method="POST" class="space-y-6" action="{% url 'order' %}">
+          <h2 class="text-2xl font-bold text-gray-800 mb-6">Shipping Information</h2>
+          <form method="POST" class="space-y-6" action="{% url 'checkout_session' %}">
             {% csrf_token %}
             
             <div class="space-y-5 border p-6 rounded-xl border-sky-100 bg-sky-50/50">
@@ -135,10 +135,15 @@
                   </div>
                 </div>
             </div>
-
-            <button type="submit" class="w-full mt-6 bg-sky-600 text-white font-extrabold py-4 rounded-xl shadow-lg shadow-sky-500/50 hover:bg-sky-700 transition duration-300 transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-sky-300 text-lg tracking-wider uppercase">
-              Confirm & Place Order
+            
+            <!-- <form method="POST" action="{% url 'checkout_session' %}"> -->
+            <!-- {% csrf_token %} -->
+            <input type="number" name="price" value="{{ total|default:'' }}">
+            <button type="submit" class="w-full bg-indigo-600 text-white font-extrabold py-4 rounded-full shadow-lg hover:bg-indigo-700 transition-colors duration-200 transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50">
+              Place Order
             </button>
+          <!-- </form> -->
+
           </form>
           
           <p class="mt-4 text-center text-xs text-gray-500">By placing this order, you agree to the DRONEBASE Terms and Conditions.</p>

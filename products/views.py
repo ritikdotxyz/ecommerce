@@ -221,6 +221,8 @@ def checkout(request):
     for item in cart_items:
         total += item.total
 
+    print(f"total: {total}")
+
     user_address = UserAddress.objects.filter(user=request.user)
     # user = CustomUser.objects.filter(user=request.user).first()
 
