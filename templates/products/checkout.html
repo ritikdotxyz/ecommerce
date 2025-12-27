@@ -84,7 +84,7 @@
 
         <div>
           <h2 class="text-2xl font-bold text-gray-800 mb-6">Shipping Information</h2>
-          <form method="POST" class="space-y-6" action="{% url 'order' %}">
+          <form method="POST" class="space-y-6" action="{% url 'checkout_session' %}">
             {% csrf_token %}
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
@@ -118,10 +118,15 @@
                 <label for="card" class="ml-3 text-base font-medium text-gray-700">Credit/Debit Card</label>
               </div>
             </div>
-
+            
+            <!-- <form method="POST" action="{% url 'checkout_session' %}"> -->
+            <!-- {% csrf_token %} -->
+            <input type="number" name="price" value="{{ total|default:'' }}">
             <button type="submit" class="w-full bg-indigo-600 text-white font-extrabold py-4 rounded-full shadow-lg hover:bg-indigo-700 transition-colors duration-200 transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50">
               Place Order
             </button>
+          <!-- </form> -->
+
           </form>
         </div>
       </div>
