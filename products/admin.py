@@ -12,15 +12,21 @@ from .models import (
 )
 
 
+class ProductImageInline(admin.TabularInline):
+    model = ProductImage
+    extra = 1
+
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    prepopulated_fields = {"slug": ("name",)}
+    inlines = [ProductImageInline]
+
+
 class ProductCategoryAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
 
 
-class ProductAdmin(admin.ModelAdmin):
-    prepopulated_fields = {"slug": ("name",)}
-
-
-admin.site.register(Product, ProductAdmin)
 admin.site.register(ProductCategory, ProductCategoryAdmin)
 admin.site.register(ProductImage)
 admin.site.register(Discount)
