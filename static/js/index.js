@@ -10,14 +10,13 @@ function update_cart_count() {
       return response.json();
     })
     .then((data) => {
-      console.log(data.count);
+      console.log(`Cart count = ${data.count}`);
       document.getElementById("cart").innerHTML = data.count;
     })
     .catch((error) => {
       console.error("Error:", error);
     });
 
-  console.log("hello");
 }
 
-update_cart_count(); //call everytime when page is reloaded
+update_cart_count(); //calls everytime when page is reloaded

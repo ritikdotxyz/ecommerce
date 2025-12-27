@@ -323,7 +323,10 @@ def write_review(request, id, slug):
 
 
 def get_cart_count(request):
-    cart_items = Cart.objects.filter(user=request.user)
+    if request.user.is_authenticated:
+        cart_items = Cart.objects.filter(user=request.user)
+    else:
+        cart_items = []
     cart_item_count = len(cart_items)
 
     response_data = {"count": cart_item_count}

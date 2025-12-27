@@ -17,11 +17,26 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 DOMAIN = settings.DOMAIN
 
 
-def handle_user_info(request):
+def save_user_info(request):
+    first_name = request.POST.get("first_name")
+    last_name = request.POST.get("last_name")
+    address = request.POST.get("address")
+    phone_number = request.POST.get("phone_number")
+
     user = CustomUser.objects.get(id=request.user.id)
+    user.phone_no = phone_number
+    user.first_name = first_name
+    user.last_name = last_name
+    user.save()
 
-    UserAddress.objects.get_or_create(user=user)
+    user_add, created = UserAddress.objects.get_or_create(
+        user=user, address_1=address, city=address
+    )
+    if created:
+        user_add.save()
 
+
+def clear_cart(request):
     cart_items = Cart.objects.filter(user=request.user)
     if not cart_items.exists():
         return redirect("home")
@@ -40,7 +55,7 @@ def handle_user_info(request):
     order.total = total
     order.save()
 
-    order_items = OrderItems.objects.filter(order_id=order)
+    # order_items = OrderItems.objects.filter(order_id=order)
 
     # deduct from the stock
     for item in cart_items:
@@ -54,14 +69,11 @@ def handle_user_info(request):
 def checkout_session(request):
     if request.method == "POST":
         try:
-            # Get the product details from the POST request
-            # product_name = request.POST.get("name")
+            save_user_info(request)
+
             print("price: ", request.POST.get("price"))
-            product_price = (
-                Decimal(request.POST.get("price")) * 100
-            )  # Convert to cents for Stripe
+            product_price = Decimal(request.POST.get("price")) * 100
             print(product_price)
-            # product_description = request.POST.get("description")
 
             user_email = request.user.email
 
@@ -72,7 +84,7 @@ def checkout_session(request):
                         "price_data": {
                             "currency": "npr",
                             "product_data": {
-                                "name": "E-commerce Product",
+                                "name": "DRONEBASE drones",
                             },
                             "unit_amount": int(product_price),
                         },
@@ -94,7 +106,7 @@ def checkout_session(request):
 
 
 def success(request):
-    handle_user_info(request)
+    clear_cart(request)
     return render(request, "payments/success.html")
 
 

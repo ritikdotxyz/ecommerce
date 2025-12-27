@@ -7,18 +7,14 @@
 <div class="bg-gray-50 min-h-screen py-16 px-4 sm:px-6 lg:px-8">
   <div class="max-w-7xl mx-auto">
     
-    <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4 text-center tracking-tight">Secure Checkout</h1>
-    <div class="max-w-4xl mx-auto mb-12 flex items-center justify-center text-sm font-medium text-green-700 bg-green-50 p-3 rounded-xl border border-green-200">
-        <svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2h2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2h2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>
-        Your payment information is secured by 256-bit encryption.
-    </div>
+    <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4 text-center tracking-tight">Checkout</h1>
 
-    <div class="bg-white rounded-3xl shadow-3xl p-6 sm:p-10 lg:p-12 border border-gray-100">
+    <div class="bg-white rounded-3xl shadow-3xl p-6 sm:p-10 lg:p-12 border-t-8 border-sky-600">
       
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
         
         <div>
-          <h2 class="text-2xl font-extrabold text-gray-800 mb-6 border-b pb-2 border-gray-100">1. Order Review</h2>
+          <h2 class="text-2xl font-extrabold text-gray-800 mb-6 border-b pb-2 border-sky-100">Orders</h2>
           <div class="space-y-4">
             {% if cart_items %}
               {% for item in cart_items %}
@@ -38,10 +34,10 @@
                   <div class="flex items-center ml-auto space-x-4">
                       <div class="flex items-center space-x-2 text-sm">
                           <a href="{% url 'update_quantity' item.product_id.id '-' 'checkout' %}" 
-                            class="p-1 bg-gray-200 text-gray-700 font-bold rounded-full hover:bg-gray-300 transition w-6 h-6 flex items-center justify-center text-base">&minus;</a>
+                            class="p-1 bg-gray-200 text-gray-700 font-bold rounded-full hover:bg-gray-300 transition w-6 h-6 flex items-center justify-center text-base focus:ring-2 focus:ring-sky-500">&minus;</a>
                           <span class="px-2 text-gray-800 font-medium">{{ item.quantity }}</span>
                           <a href="{% url 'update_quantity' item.product_id.id '+' 'checkout' %}" 
-                            class="p-1 bg-gray-200 text-gray-700 font-bold rounded-full hover:bg-gray-300 transition w-6 h-6 flex items-center justify-center text-base">+</a>
+                            class="p-1 bg-gray-200 text-gray-700 font-bold rounded-full hover:bg-gray-300 transition w-6 h-6 flex items-center justify-center text-base focus:ring-2 focus:ring-sky-500">+</a>
                       </div>
                       
                       <div class="text-lg font-bold text-gray-900 min-w-[70px] text-right">
@@ -50,23 +46,6 @@
                   </div>
                 </div>
               {% endfor %}
-            {% elif product %}
-              <div class="flex items-center bg-gray-50 rounded-xl p-4 shadow-sm border border-gray-100">
-                <div class="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden">
-                  {% if product.images.first %}
-                    <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover">
-                  {% else %}
-                    <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500 text-xs text-center">No Image</div>
-                  {% endif %}
-                </div>
-                <div class="ml-4 flex-1">
-                  <h3 class="text-lg font-semibold text-gray-800">{{ product.name }}</h3>
-                  <p class="text-sm font-medium text-gray-600">Quantity: 1</p>
-                </div>
-                <div class="ml-auto text-lg font-bold text-gray-900">
-                  Rs. {{ product.price|floatformat:2 }}
-                </div>
-              </div>
             {% endif %}
           </div>
           
@@ -87,12 +66,12 @@
         </div>
 
         <div>
-          <h2 class="text-2xl font-bold text-gray-800 mb-6">Shipping Information</h2>
-          <form method="POST" class="space-y-6" action="{% url 'checkout_session' %}">
+          <form method="POST" class="space-y-8" action="{% url 'checkout_session' %}">
             {% csrf_token %}
             
-            <div class="space-y-5 border p-6 rounded-xl border-sky-100 bg-sky-50/50">
-                <h3 class="text-xl font-bold text-sky-700">Delivery Details</h3>
+            <div class="space-y-6 border p-6 rounded-xl border-sky-300 bg-sky-50/50 shadow-md">
+                <h2 class="text-2xl font-bold text-sky-700">Delivery Details</h2>
+                
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
                     <label for="first_name" class="block text-sm font-semibold text-gray-700 mb-1">First Name</label>
@@ -119,34 +98,29 @@
                 </div>
             </div>
             
-            <div class="space-y-5 border p-6 rounded-xl border-gray-200">
-                <h3 class="text-xl font-bold text-gray-800">Payment Method</h3>
+            <div class="space-y-6 border p-6 rounded-xl border-gray-200 shadow-md">
+                <h2 class="text-2xl font-bold text-gray-800">Payment</h2>
                 <div class="space-y-3">
-                  <div class="flex items-center bg-gray-50 p-3 rounded-lg border border-gray-200 hover:bg-gray-100 cursor-pointer">
-                    <input id="cod" type="radio" name="payment_method" value="cod" class="w-5 h-5 text-sky-600 border-gray-300 focus:ring-sky-500" checked>
-                    <label for="cod" class="ml-3 text-base font-semibold text-gray-800">Cash on Delivery (COD)</label>
-                  </div>
-                  <div class="flex items-center bg-gray-50 p-3 rounded-lg border border-gray-200 hover:bg-gray-100 cursor-pointer">
-                    <input id="card" type="radio" name="payment_method" value="card" class="w-5 h-5 text-sky-600 border-gray-300 focus:ring-sky-500">
-                    <label for="card" class="ml-3 text-base font-semibold text-gray-800 flex items-center">
-                        Credit/Debit Card
-                        <span class="ml-3 text-xs text-gray-500 bg-gray-200 px-2 py-0.5 rounded-full">Coming Soon</span>
+                  
+                  <div class="flex items-center bg-sky-50 p-3 rounded-lg border-2 border-sky-400 cursor-pointer shadow-inner">
+                    <input id="card" type="radio" name="payment_method" value="card" class="w-5 h-5 text-sky-600 border-sky-300 focus:ring-sky-500" checked>
+                    <label for="card" class="ml-3 text-base font-extrabold text-sky-800 flex items-center">
+                        Credit/Debit Card (Visa, Mastercard, etc.)
                     </label>
                   </div>
                 </div>
+                
+                <p class="text-xs text-gray-500 pt-2">You will be redirected to the secure payment gateway upon order placement.</p>
             </div>
             
-            <!-- <form method="POST" action="{% url 'checkout_session' %}"> -->
-            <!-- {% csrf_token %} -->
-            <input type="number" name="price" value="{{ total|default:'' }}">
-            <button type="submit" class="w-full bg-indigo-600 text-white font-extrabold py-4 rounded-full shadow-lg hover:bg-indigo-700 transition-colors duration-200 transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50">
-              Place Order
+            <input type="hidden" name="price" value="{{ total|default:'' }}">
+            
+            <button type="submit" class="w-full bg-sky-600 text-white font-extrabold py-4 rounded-full shadow-xl shadow-sky-500/50 hover:bg-sky-700 transition-colors duration-200 transform hover:scale-[1.005] focus:outline-none focus:ring-4 focus:ring-sky-500 focus:ring-opacity-50">
+              Confirm & Place Order
             </button>
-          <!-- </form> -->
 
           </form>
           
-          <p class="mt-4 text-center text-xs text-gray-500">By placing this order, you agree to the DRONEBASE Terms and Conditions.</p>
         </div>
       </div>
     </div>
