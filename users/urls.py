@@ -9,6 +9,7 @@ from django.contrib.auth.views import (
 )
 
 from . import views
+from .api import views as api_viewws
 
 urlpatterns = [
     path("login/", views.login, name="login"),
@@ -41,6 +42,9 @@ urlpatterns = [
         name="password_reset_complete",
     ),
     path("profile/", views.profile, name="profile"),
+<<<<<<< HEAD
     path("profile-edit/", views.profile_edit, name="profile_edit"),
     path("contact/", views.contact, name="contact"),
+=======
+>>>>>>> api
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
