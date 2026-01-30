@@ -55,7 +55,7 @@
         {% csrf_token %}
         <div>
           <label for="full-name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-          <input type="text" name="full-name" id="full-name" required
+          <input type="text" pattern="[A-Za-z]+" title="Only alphabets are allowed" name="full-name" id="full-name" required
                  class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-sky-500 focus:border-sky-500 transition duration-150">
         </div>
 

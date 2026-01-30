@@ -27,13 +27,13 @@
           
           <div>
             <label for="first_name" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-            <input type="text" name="first_name" id="first_name" value="{{ request.user.first_name }}" required
+            <input type="text" pattern="[A-Za-z]+" title="Only alphabets are allowed" name="first_name" id="first_name" value="{{ request.user.first_name }}" required
                    class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-sky-500 focus:border-sky-500 transition duration-150">
           </div>
 
           <div>
             <label for="last_name" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-            <input type="text" name="last_name" id="last_name" value="{{ request.user.last_name }}" required
+            <input type="text" pattern="[A-Za-z]+" title="Only alphabets are allowed" name="last_name" id="last_name" value="{{ request.user.last_name }}" required
                    class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-sky-500 focus:border-sky-500 transition duration-150">
           </div>
           

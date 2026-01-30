@@ -75,12 +75,12 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
                     <label for="first_name" class="block text-sm font-semibold text-gray-700 mb-1">First Name</label>
-                    <input type="text" id="first_name" name="first_name" value="{{ user.first_name|default:'' }}" 
+                    <input type="text" pattern="[A-Za-z]+" title="Only alphabets are allowed" id="first_name" name="first_name" value="{{ user.first_name|default:'' }}" 
                       class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition shadow-sm" required>
                   </div>
                   <div>
                     <label for="last_name" class="block text-sm font-semibold text-gray-700 mb-1">Last Name</label>
-                    <input type="text" id="last_name" name="last_name" value="{{ user.last_name|default:'' }}" 
+                    <input type="text" pattern="[A-Za-z]+" title="Only alphabets are allowed" id="last_name" name="last_name" value="{{ user.last_name|default:'' }}" 
                       class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition shadow-sm" required>
                   </div>
                 </div>
