@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "products",
     "payments",
     "corsheaders",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [

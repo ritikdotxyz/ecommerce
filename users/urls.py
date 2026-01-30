@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth.views import (
@@ -9,7 +9,6 @@ from django.contrib.auth.views import (
 )
 
 from . import views
-from .api import views as api_viewws
 
 urlpatterns = [
     path("login/", views.login, name="login"),
@@ -43,4 +42,5 @@ urlpatterns = [
     ),
     path("profile/", views.profile, name="profile"),
     path("contact/", views.contact, name="contact"),
+    path("api/", include("users.api.urls")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

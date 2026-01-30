@@ -12,17 +12,17 @@ from products.models import Product, Cart, ProductCategory, Order, OrderItems
 
 
 @api_view(["GET"])
-def api_prodcuts(request):
+def api_products(request):
     products = Product.objects.all()
     serializer = ProductSerializer(products, many=True)
     return Response(serializer.data, status.HTTP_200_OK)
 
 
-@api_view(["GET"])
-def api_category(request):
-    categories = ProductCategory.objects.all()
-    serializer = ProductCategorySerializer(categories, many=True)
-    return Response(serializer.data, status.HTTP_200_OK)
+# @api_view(["GET"])
+# def api_category(request):
+#     categories = ProductCategory.objects.all()
+#     serializer = ProductCategorySerializer(categories, many=True)
+#     return Response(serializer.data, status.HTTP_200_OK)
 
 
 @api_view(["GET", "PATCH", "DELETE"])
@@ -38,7 +38,9 @@ def api_prodcut(request, id):
         return Response(serializer.data, status.HTTP_200_OK)
 
     elif request.method == "PATCH":
-        serializer = ProductSerializer(product, data=request.data, partial=True)
+        serializer = ProductSerializer(
+            product, data=request.data, partial=True
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status.HTTP_200_OK)

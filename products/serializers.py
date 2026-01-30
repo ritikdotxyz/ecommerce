@@ -16,6 +16,12 @@ class ProductCategorySerializer(serializers.ModelSerializer):
         model = ProductCategory
         fields = "__all__"
 
+    def validate(self, data):
+        if data["name"].stip() == "":
+            raise serializers.ValidationError(
+                "Name cannot be empty or whitespace only"
+            )
+
 
 class DiscountSerializer(serializers.ModelSerializer):
     class Meta:
@@ -27,6 +33,18 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = "__all__"
+
+    def validate(self, data):
+        if data["name"].stip() == "":
+            raise serializers.ValidationError(
+                "Name cannot be empty or whitespace only"
+            )
+
+        if data["price"] < 0:
+            raise serializers.ValidationError("Price cannot be negative")
+
+        if data["quantity"] < 0:
+            raise serializers.ValidationError("Quantity cannot be negative")
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
