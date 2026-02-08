@@ -34,7 +34,7 @@ DOMAIN = "http://localhost:8000"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -152,7 +152,7 @@ AUTH_USER_MODEL = "users.CustomUser"
 
 STATICFILES_DIRS = [
     BASE_DIR / "static",
-    "/var/www/static/",
+    # "/var/www/static/",
 ]
 
 # to show the product images
