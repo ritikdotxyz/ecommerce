@@ -33,7 +33,7 @@ DOMAIN = "http://localhost:8000"
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.getenv("DEBUG")
 
 ALLOWED_HOSTS = ["*"]
 
