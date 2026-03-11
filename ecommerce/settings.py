@@ -36,7 +36,7 @@ DOMAIN = "http://localhost:8000"
 DEBUG = os.getenv("DEBUG")
 
 ALLOWED_HOSTS = [
-    "https://ecommerce-1011.up.railway.app",
+    "ecommerce-1011.up.railway.app",
 ]
 CSRF_TRUSTED_ORIGINS = [
     "https://ecommerce-1011.up.railway.app",
