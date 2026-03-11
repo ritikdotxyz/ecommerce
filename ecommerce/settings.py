@@ -35,7 +35,12 @@ DOMAIN = "http://localhost:8000"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG")
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [
+    "https://ecommerce-1011.up.railway.app",
+]
+CSRF_TRUSTED_ORIGINS = [
+    "https://ecommerce-1011.up.railway.app",
+]
 
 
 # Application definition
